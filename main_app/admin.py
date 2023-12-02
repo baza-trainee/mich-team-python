@@ -8,16 +8,19 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 
 admin.site.register(ProductCategory, ProductCategoryAdmin)
 
+
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
     extra = 1
+
 
 class SizeQuantityInline(admin.TabularInline):
     model = SizeQuantity
     extra = 1
 
+
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'price')
+    list_display = ('name', 'category_id', 'price')
     inlines = [ProductImageInline, SizeQuantityInline]
 
 admin.site.register(Product, ProductAdmin)

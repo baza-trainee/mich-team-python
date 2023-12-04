@@ -30,11 +30,15 @@ class SizeQuantity(models.Model):
 
 
 class Product(models.Model):
-    category_id = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    description = models.TextField()
-    composition = models.TextField()
+    category_id = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, verbose_name="Категорія")
+    name = models.CharField(max_length=255, verbose_name="Назва")
+    name_en = models.CharField(max_length=255, verbose_name="Назва (англійською)", null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Ціна")
+    price_en = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Ціна (англійською)", null=True, blank=True)
+    description = models.TextField(verbose_name="Опис")
+    description_en = models.TextField(verbose_name="Опис (англійською)", null=True, blank=True)
+    composition = models.TextField(verbose_name="Склад")
+    composition_en = models.TextField(verbose_name="Склад (англійською)", null=True, blank=True)
 
     def __str__(self):
         return self.name

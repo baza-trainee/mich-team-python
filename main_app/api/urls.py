@@ -6,19 +6,10 @@ from .views import (
     ProductCategoryListView,
     ProductImageView,
     SizeQuantityView,
-    MyTokenObtainPairView,
 )
 
-from rest_framework_simplejwt.views import (
-    TokenRefreshView,
-)
 
 urlpatterns = [
-    path('', views.getRoutes),
-
-    path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-
     path('products/', ProductListCreateView.as_view(), name='product-list-create'),
     path('products/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
     path('categories/', ProductCategoryListView.as_view(), name='category-list-create'),

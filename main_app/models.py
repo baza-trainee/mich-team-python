@@ -7,6 +7,10 @@ class ProductCategory(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = "Категорiя"
+        verbose_name_plural = "Додання категорiй"
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey('Product', related_name='images', on_delete=models.CASCADE)
@@ -42,3 +46,7 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = "Товар"
+        verbose_name_plural = "Додання товару"

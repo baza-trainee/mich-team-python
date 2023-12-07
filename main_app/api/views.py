@@ -21,14 +21,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
-@api_view(['GET'])
-def getRoutes(request):
-    routes = [
-        '/api/token',
-        '/api/token/refresh',
-    ]
-    return Response(routes)
-
 
 class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Product.objects.all()

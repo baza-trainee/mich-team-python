@@ -23,5 +23,7 @@ urlpatterns = [
     path('', include('main_app.urls')),
     path('user_auth/', include('user_auth.api.urls')),
     path('', include('user_auth.urls')),
-    path('', include('orders.api.urls'))
+    path('', include('orders.api.urls')),
+    path('api/', include('subscribers.api.urls')),
+    path('subscribers/', include('subscribers.urls')),
 ]

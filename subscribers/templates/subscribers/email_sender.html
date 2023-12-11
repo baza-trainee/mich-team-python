@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Надсилання електронного листа всім пiдписникам</title>
+</head>
+<body>
+<header style="text-align:center;"> <h1>Надсилання електронного листа всім пiдписникам</h1></header>
+<hr>
+<div style="text-align:center;">
+    <h4>Нове повiдомлення</h4>
+    <form method="POST" action="{% url 'email_sender' %}">
+        {% csrf_token %}
+        <input type="text" name="name" placeholder="Заголовок електронного листа" required>
+        <br>
+        <br>
+        <textarea name="message" placeholder="Повідомлення для доставки" required></textarea>
+        <br>
+        <br>
+        <button class="btn btn-primary mt-2" type="submit">Надіслати</button>
+        <br>
+        <br>
+    </form>
+</div>
+</body>
+</html>

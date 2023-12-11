@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.utils import timezone
 
 from django.db import models
@@ -8,7 +9,7 @@ from main_app.models import Product
 
 class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_DEFAULT, null=True, default=None, verbose_name="Товар")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Користувач")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Користувач")
     first_name = models.CharField(max_length=50, verbose_name="Ім'я")
     last_name = models.CharField(max_length=50, verbose_name="Прізвище")
     phone = models.CharField(max_length=15, verbose_name="Телефон")

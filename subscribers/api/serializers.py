@@ -4,4 +4,4 @@ from subscribers.models import EmailSubscribers
 class SubscriberSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmailSubscribers
-        fields = ['email', 'subscribed']
+        fields = ['email', 'is_subscribed']

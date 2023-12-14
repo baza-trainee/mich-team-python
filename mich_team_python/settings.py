@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'main_app',
     'orders',
     'user_auth',
+    'subscribers',
 ]
 
 REST_FRAMEWORK = {
@@ -201,6 +202,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+    {
+        'NAME': 'user_auth.validators.MaxLengthValidator',
+        'OPTIONS': {
+            'max_length': 16,
+        }
     },
 ]
 

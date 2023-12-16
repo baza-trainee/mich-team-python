@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import ProductCategory, Product, ProductImage, SizeQuantity
-
+from django.utils.html import format_html
 
 class ProductCategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)
@@ -20,7 +20,15 @@ class SizeQuantityInline(admin.TabularInline):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category_id', 'price')
+    list_display = ('name', 'category_id', 'price', 'display_image')
     inlines = [ProductImageInline, SizeQuantityInline]
+
+    def display_image(self, obj):
+        if obj.images.exists():
+            return format_html('<img src="{}" width="50" height="50" />', obj.images.first().image.url)
+        else:
+            return "Немає фото"
+
+    display_image.short_description = 'Фото'
 
 admin.site.register(Product, ProductAdmin)

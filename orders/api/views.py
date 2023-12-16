@@ -3,7 +3,7 @@ from .serializers import OrderSerializer
 from ..models import Order
 
 
-class OrderListCreateView(generics.ListAPIView):
+class OrderListCreateView(generics.ListCreateAPIView):
     serializer_class = OrderSerializer
     permission_classes = [permissions.IsAuthenticated]
 

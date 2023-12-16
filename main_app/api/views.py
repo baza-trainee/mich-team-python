@@ -12,9 +12,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
 
-        # Add custom claims
         token['username'] = user.username
-        # ...
 
         return token
 
@@ -22,7 +20,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
-class ProductListCreateView(generics.ListCreateAPIView):
+class ProductListCreateView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
@@ -30,14 +28,14 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-class ProductCategoryListView(generics.ListCreateAPIView):
+class ProductCategoryListView(generics.ListAPIView):
     queryset = ProductCategory.objects.all()
     serializer_class = ProductCategorySerializer
 
-class ProductImageView(generics.ListCreateAPIView):
+class ProductImageView(generics.ListAPIView):
     queryset = ProductImage.objects.all()
     serializer_class = ProductImageSerializer
 
-class SizeQuantityView(generics.ListCreateAPIView):
+class SizeQuantityView(generics.ListAPIView):
     queryset = SizeQuantity.objects.all()
     serializer_class = SizeQuantitySerializer

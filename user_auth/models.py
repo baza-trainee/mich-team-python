@@ -25,11 +25,11 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    is_subscribed = models.BooleanField(default=False)
+    first_name = models.CharField(max_length=30, verbose_name="Ім'я")
+    last_name = models.CharField(max_length=30, verbose_name="Призвище")
+    is_active = models.BooleanField(default=True, verbose_name="Активний")
+    is_staff = models.BooleanField(default=False, verbose_name="Адмін")
+    is_subscribed = models.BooleanField(verbose_name="Підписан")
 
     objects = CustomUserManager()
 
@@ -38,3 +38,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+    class Meta:
+        verbose_name = "користувача"
+        verbose_name_plural = "Користувачі"

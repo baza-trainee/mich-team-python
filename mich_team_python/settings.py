@@ -237,3 +237,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = ['https://8bc8-78-26-198-240.ngrok-free.app']
+
+MEDIA_URL = '/product_photos/'
+MEDIA_ROOT = os.path.join(BASE_DIR)

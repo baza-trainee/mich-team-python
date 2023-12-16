@@ -1,8 +1,7 @@
-# subscribers/urls.py
 from django.urls import path
-from .views import subscribe, unsubscribe
+from .views import SubscribeView, UnsubscribeView
 
 urlpatterns = [
-    path('subscribe/', subscribe, name='subscribe'),
-    path('unsubscribe/<str:email>/', unsubscribe, name='unsubscribe'),
+    path('subscribe/', SubscribeView.as_view(), name='subscribe'),
+    path('unsubscribe/<str:email>/', UnsubscribeView.as_view(), name='unsubscribe'),
 ]

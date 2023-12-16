@@ -1,24 +1,28 @@
-# subscribers/views.py
-from django.shortcuts import render
-from rest_framework import status
+from rest_framework import generics
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework import status
 from subscribers.models import EmailSubscribers
 from .serializers import SubscriberSerializer
 
-@api_view(['POST'])
-def subscribe(request):
-    serializer = SubscriberSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class SubscribeView(generics.CreateAPIView):
+    serializer_class = SubscriberSerializer
 
-@api_view(['DELETE'])
-def unsubscribe(request, email):
-    try:
-        subscriber = EmailSubscribers.objects.get(email=email)
-        subscriber.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    except EmailSubscribers.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UnsubscribeView(generics.DestroyAPIView):
+    queryset = EmailSubscribers.objects.all()
+    lookup_field = 'email'
+    serializer_class = SubscriberSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except EmailSubscribers.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)

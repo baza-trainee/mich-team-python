@@ -152,6 +152,8 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+CORS_ALLOW_HEADERS = ["ngrok-skip-browser-warning"]
+
 ROOT_URLCONF = 'mich_team_python.urls'
 
 TEMPLATES = [

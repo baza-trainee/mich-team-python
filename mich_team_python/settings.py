@@ -242,3 +242,21 @@ CSRF_TRUSTED_ORIGINS = ['https://8bc8-78-26-198-240.ngrok-free.app']
 
 MEDIA_URL = '/product_photos/'
 MEDIA_ROOT = os.path.join(BASE_DIR)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+    },
+}

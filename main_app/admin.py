@@ -21,6 +21,7 @@ class SizeQuantityInline(admin.TabularInline):
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'category_id', 'price', 'display_image')
+    list_editable = ('price',)
     inlines = [ProductImageInline, SizeQuantityInline]
 
     def display_image(self, obj):

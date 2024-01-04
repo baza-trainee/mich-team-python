@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'orders',
     'user_auth',
     'subscribers',
+    'cart'
 ]
 
 REST_FRAMEWORK = {
@@ -238,7 +239,13 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_TRUSTED_ORIGINS = ['https://8bc8-78-26-198-240.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://a021-78-26-198-240.ngrok-free.app/']
 
 MEDIA_URL = '/product_photos/'
 MEDIA_ROOT = os.path.join(BASE_DIR)
+
+
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 86400000
+SESSION_COOKIE_NAME = 'sessionid'

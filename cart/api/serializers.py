@@ -6,8 +6,6 @@ from main_app.api.serializers import ProductSerializer
 
 class CartSerializer(serializers.ModelSerializer):
 
-
     class Meta:
         model = Cart
-        fields = ['user', 'product', 'session_id', 'quantity']
-
+        fields = ['user', 'session_id', 'product', 'size', 'quantity']

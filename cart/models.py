@@ -12,4 +12,4 @@ class Cart(models.Model):
     quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):
-        return f"CartItem - {self.product} - Size: {self.size} - Quantity: {self.quantity}"
+        return f"{self.product} - Розмір: {self.size} - К-сть: {self.quantity}"

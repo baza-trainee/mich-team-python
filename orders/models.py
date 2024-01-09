@@ -9,7 +9,7 @@ from main_app.models import Product, SizeQuantity
 
 
 class Order(models.Model):
-    product = models.ForeignKey(Cart, on_delete=models.SET_DEFAULT, null=True, default=None, verbose_name="Товар")
+    carts = models.ManyToManyField(Cart, blank=True, verbose_name="Корзіни")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                              verbose_name="Користувач")
     first_name = models.CharField(max_length=50, verbose_name="Ім'я")

@@ -1,65 +1,69 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-
+from django.contrib.auth import get_user_model
 from cart.models import Cart
 from main_app.models import Product
 from .serializers import OrderSerializer
-from ..models import Order
 
+CustomUser = get_user_model()
 
-class OrderListCreateView(generics.ListCreateAPIView):
+class OrderListCreateView(generics.CreateAPIView):
     serializer_class = OrderSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]  # TODO: IsAuth
 
-    def get_queryset(self):
-        return Order.objects.filter(user=self.request.user)
+    def get_session_id(self, request):
+        # Function to get session ID for unauthenticated users
+        session_key = request.session.session_key
+        if not session_key:
+            request.session.save()
+            session_key = request.session.session_key
+        return session_key
 
-    # def post(self, request, *args, **kwargs):
-    #     # Получение или создание корзины для пользователя
-    #     cart, created = Cart.objects.get_or_create(user=request.user)
-    #
-    #     # Добавление товаров из корзины в заказ
-    #     order_serializer = self.get_serializer(data=request.data)
-    #     if order_serializer.is_valid():
-    #         order = order_serializer.save(user=request.user)
-    #         order.products.set(cart.products.all())  # Перенос товаров из корзины в заказ
-    #         cart.products.clear()  # Очистка корзины после оформления заказа
-    #
-    #         return Response(order_serializer.data, status=status.HTTP_201_CREATED)
-    #
-    #     return Response(order_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, *args, **kwargs):
+        first_name = request.data.get("first_name")
+        last_name = request.data.get("last_name")
+        phone = request.data.get("phone")
+        delivery_method = request.data.get("delivery_method")
+        country = request.data.get("country")
+        street = request.data.get("street")
+        city = request.data.get("city")
+        state = request.data.get("state")
+        zip_code = request.data.get("zip_code")
 
+        session_id = request.session.session_key
 
-# class OrderListCreateView(generics.ListCreateAPIView):
-#     serializer_class = OrderSerializer
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#     def get_queryset(self):
-#         return Order.objects.filter(user=self.request.user)
-#
-#     def perform_create(self, serializer):
-#         # Get product ID from the request data
-#         product_id = self.request.data.get('product')
-#
-#         try:
-#             # Get the product and related size from the database
-#             product = Product.objects.get(id=product_id)
-#             size = self.request.data.get('size')  # Assuming you have a 'size' field in your order serializer
-#             size_quantity = SizeQuantity.objects.get(product=product, size=size)
-#         except Product.DoesNotExist:
-#             return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
-#         except SizeQuantity.DoesNotExist:
-#             return Response({'error': 'Size not found for the selected product'}, status=status.HTTP_404_NOT_FOUND)
-#
-#         # Perform the order creation
-#         serializer.save(user=self.request.user)
-#
-#         # Decrease the quantity of the product for the selected size
-#         size_quantity.quantity -= 1
-#         size_quantity.save()
-#
-#         # Optionally, you can check if the quantity is not negative
-#         if size_quantity.quantity < 0:
-#             return Response({'error': 'Product is out of stock for the selected size'}, status=status.HTTP_400_BAD_REQUEST)
-#
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+        user = request.user if request.user.is_authenticated else None
+        user_id = user.id if user and user.is_authenticated else None
+
+        # Include product data directly in response_data
+        product_data = request.data.get("product")
+        response_data = {
+            "first_name": first_name,
+            "last_name": last_name,
+            "phone": phone,
+            "delivery_method": delivery_method,
+            "country": country,
+            "street": street,
+            "city": city,
+            "state": state,
+            "zip_code": zip_code,
+            'user': user_id,
+            'product': product_data  # Include product data directly
+        }
+
+        order_serializer = OrderSerializer(data=response_data)
+
+        if order_serializer.is_valid():
+            order = order_serializer.save(user=user)
+
+            # Handle associating carts with the order
+            if user and user.is_authenticated:
+                user_carts = Cart.objects.filter(user=user)
+                order.carts.set(user_carts)
+            else:
+                session_carts = Cart.objects.filter(session_id=session_id)
+                order.carts.set(session_carts)
+
+            return Response(order_serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(order_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -30,6 +30,7 @@ class OrderListCreateView(generics.CreateAPIView):
         state = request.data.get("state")
         zip_code = request.data.get("zip_code")
         product_data = request.data.get("product")
+        # email = request.data.get("email")
 
         session_id = request.session.session_key
 
@@ -57,17 +58,21 @@ class OrderListCreateView(generics.CreateAPIView):
 
             # Handle associating carts with the order
             if user and user.is_authenticated:
-                user_carts = Cart.objects.filter(user=user)
-                order.carts.set(user_carts)
-                # user_carts.delete()
+                user_carts = Cart.objects.filter(user=user, is_active=True)
+                user_carts.update(order=order)
+
+                for cart in user_carts:
+                    cart.is_active = False
+                    cart.save()
             else:
-                session_carts = Cart.objects.filter(session_id=session_id)
-                order.carts.set(session_carts)
-                # session_carts.delete()
+                session_carts = Cart.objects.filter(session_id=session_id, is_active=True)
+                session_carts.update(order=order)
 
+                for cart in session_carts:
+                    cart.is_active = False
+                    cart.save()
 
-
-
+            #
             # for cart in order.carts.all():
             #     product = cart.product
             #     quantity = cart.quantity

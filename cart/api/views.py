@@ -37,7 +37,8 @@ class CartItemCreateView(ListCreateAPIView, DestroyAPIView, UpdateAPIView):
         if size and not SizeQuantity.objects.filter(product=product, size=size, quantity__gt=0).exists():
             return Response({'error': "Invalid size for the product"}, status=status.HTTP_400_BAD_REQUEST)
 
-        cart_item = Cart.objects.filter(user=user, session_id=session_id, product=product, size=size).first()
+        cart_item = Cart.objects.filter(user=user, session_id=session_id, product=product, size=size,
+                                        is_active=True).first()
 
 
         if cart_item:
@@ -49,7 +50,7 @@ class CartItemCreateView(ListCreateAPIView, DestroyAPIView, UpdateAPIView):
         else:
             # If the product does not exist or with a different size, create a new cart item
             cart_item_data = Cart.objects.get_or_create(user=user, session_id=session_id, product=product, size=size,
-                                                        quantity=quantity)[0]
+                                                        quantity=quantity, is_active=True)[0]
 
 
             serializer = CartSerializer(cart_item_data)
@@ -65,14 +66,15 @@ class CartItemCreateView(ListCreateAPIView, DestroyAPIView, UpdateAPIView):
         # Получение списка товаров в корзине
         if request.user.is_authenticated:
             Cart.objects.filter(session_id=session_id).update(user=user)
-            cart_items = Cart.objects.filter(user=user)
+            cart_items = Cart.objects.filter(user=user, is_active=True)
         else:
-            cart_items = Cart.objects.filter(session_id=session_id)
+            cart_items = Cart.objects.filter(session_id=session_id, is_active=True)
 
         serializer = CartSerializer(cart_items, many=True)
 
         # Получение общего количества товаров в корзине
         total_items = cart_items.aggregate(total_items=Sum('quantity'))['total_items'] or 0
+
 
         response_data = {
             'cart_items': serializer.data,
@@ -92,7 +94,8 @@ class CartItemCreateView(ListCreateAPIView, DestroyAPIView, UpdateAPIView):
         except Product.DoesNotExist:
             return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        cart_item = Cart.objects.filter(user=user, session_id=session_id, product=product, size=size).first()
+        cart_item = Cart.objects.filter(user=user, session_id=session_id, product=product, size=size,
+                                        is_active=True).first()
 
         if not cart_item:
             return Response({'error': 'Cart item not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -117,7 +120,8 @@ class CartItemCreateView(ListCreateAPIView, DestroyAPIView, UpdateAPIView):
         except Product.DoesNotExist:
             return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        cart_item = Cart.objects.filter(user=user, session_id=session_id, product=product, size=size).first()
+        cart_item = Cart.objects.filter(user=user, session_id=session_id, product=product, size=size,
+                                        is_active=True).first()
 
         if not cart_item:
             return Response({'error': 'Cart item not found'}, status=status.HTTP_404_NOT_FOUND)

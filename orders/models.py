@@ -24,13 +24,14 @@ class Order(models.Model):
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата создания")
 
     STATUS_CHOICES = [
+        ('Новий', 'Новий'),
         ('Прийнято', 'Прийнято'),
         ('Скасовано', 'Скасовано'),
         ('Оплачено', 'Оплачено'),
         ('В дорозі', 'В дорозі'),
     ]
 
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Прийнято', verbose_name="Статус")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Новий', verbose_name="Статус")
 
     def __str__(self):
         return str(self.created_at)

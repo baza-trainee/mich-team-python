@@ -9,7 +9,7 @@ CustomUser = get_user_model()
 
 class OrderListCreateView(generics.CreateAPIView):
     serializer_class = OrderSerializer
-    permission_classes = [permissions.AllowAny]  # TODO: IsAuth
+    permission_classes = [permissions.AllowAny]
 
     def get_session_id(self, request):
         # Function to get session ID for unauthenticated users
@@ -29,14 +29,13 @@ class OrderListCreateView(generics.CreateAPIView):
         city = request.data.get("city")
         state = request.data.get("state")
         zip_code = request.data.get("zip_code")
+        product_data = request.data.get("product")
 
         session_id = request.session.session_key
 
         user = request.user if request.user.is_authenticated else None
         user_id = user.id if user and user.is_authenticated else None
 
-        # Include product data directly in response_data
-        product_data = request.data.get("product")
         response_data = {
             "first_name": first_name,
             "last_name": last_name,
@@ -48,7 +47,7 @@ class OrderListCreateView(generics.CreateAPIView):
             "state": state,
             "zip_code": zip_code,
             'user': user_id,
-            'product': product_data  # Include product data directly
+            'product': product_data
         }
 
         order_serializer = OrderSerializer(data=response_data)
@@ -60,9 +59,20 @@ class OrderListCreateView(generics.CreateAPIView):
             if user and user.is_authenticated:
                 user_carts = Cart.objects.filter(user=user)
                 order.carts.set(user_carts)
+                # user_carts.delete()
             else:
                 session_carts = Cart.objects.filter(session_id=session_id)
                 order.carts.set(session_carts)
+                # session_carts.delete()
+
+
+
+
+            # for cart in order.carts.all():
+            #     product = cart.product
+            #     quantity = cart.quantity
+            #     product.quantity -= quantity
+            #     product.save()
 
             return Response(order_serializer.data, status=status.HTTP_201_CREATED)
 

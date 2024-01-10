@@ -9,7 +9,7 @@ from main_app.models import Product, SizeQuantity
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                              verbose_name="Користувач")
-    # email = models.EmailField(max_length=40, verbose_name="Пошта")
+    email = models.EmailField(max_length=40, verbose_name="Пошта")
     first_name = models.CharField(max_length=50, verbose_name="Ім'я")
     last_name = models.CharField(max_length=50, verbose_name="Прізвище")
     phone = models.CharField(max_length=15, verbose_name="Телефон")

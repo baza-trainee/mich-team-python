@@ -7,6 +7,7 @@ from .serializers import OrderSerializer
 
 CustomUser = get_user_model()
 
+
 class OrderListCreateView(generics.CreateAPIView):
     serializer_class = OrderSerializer
     permission_classes = [permissions.AllowAny]
@@ -20,8 +21,6 @@ class OrderListCreateView(generics.CreateAPIView):
         return session_key
 
     def post(self, request, *args, **kwargs):
-        first_name = request.data.get("first_name")
-        last_name = request.data.get("last_name")
         phone = request.data.get("phone")
         delivery_method = request.data.get("delivery_method")
         country = request.data.get("country")
@@ -30,14 +29,17 @@ class OrderListCreateView(generics.CreateAPIView):
         state = request.data.get("state")
         zip_code = request.data.get("zip_code")
         product_data = request.data.get("product")
-        # email = request.data.get("email")
 
         session_id = request.session.session_key
 
         user = request.user if request.user.is_authenticated else None
         user_id = user.id if user and user.is_authenticated else None
+        email = user.email if user and user.is_authenticated else request.data.get("email")
+        first_name = user.first_name if user and user.is_authenticated else request.data.get("first_name")
+        last_name = user.last_name if user and user.is_authenticated else request.data.get("last_name")
 
         response_data = {
+            "email": email,
             "first_name": first_name,
             "last_name": last_name,
             "phone": phone,

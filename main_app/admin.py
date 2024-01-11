@@ -26,13 +26,14 @@ class ProductImageInline(admin.TabularInline):
 
 class SizeQuantityInline(admin.TabularInline):
     model = SizeQuantity
-    extra = 1
+    extra = 0
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'category_id', 'price', 'display_image')
-    list_editable = ('price',)
+    list_display = ('id', 'name', 'category_id', 'price', 'display_image', 'is_active',)
+    list_editable = ('price', 'is_active',)
     inlines = [ProductImageInline, SizeQuantityInline]
+    list_display_links = ('name',)
 
     def display_image(self, obj):
         if obj.images.exists():

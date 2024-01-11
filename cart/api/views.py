@@ -131,6 +131,10 @@ class CartItemCreateView(ListCreateAPIView, DestroyAPIView, UpdateAPIView):
         if size and not SizeQuantity.objects.filter(product=product, size=size, quantity__gt=0).exists():
             return Response({'error': "Invalid size for the product"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Check if the provided new_size is valid for the product
+        if new_size and not SizeQuantity.objects.filter(product=product, size=new_size, quantity__gt=0).exists():
+            return Response({'error': "Invalid new_size for the product"}, status=status.HTTP_400_BAD_REQUEST)
+
         # Update the quantity
         cart_item.quantity = int(quantity)
         cart_item.size = new_size

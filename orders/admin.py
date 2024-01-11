@@ -16,7 +16,7 @@ class CartInline(admin.TabularInline):
             images_html += format_html('<img src="{}" height="80" />', product_image.image.url)
         return mark_safe(images_html)
 
-    display_images.short_description = 'Product Images'
+    display_images.short_description = 'Фото'
 
 
 

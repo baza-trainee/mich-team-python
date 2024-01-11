@@ -74,7 +74,6 @@ class OrderListCreateView(generics.CreateAPIView):
                     cart.is_active = False
                     cart.save()
 
-            #
             # for cart in order.carts.all():
             #     product = cart.product
             #     quantity = cart.quantity

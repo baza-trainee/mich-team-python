@@ -1,4 +1,4 @@
-from django.utils.html import format_html
+from django.utils.html import format_html, mark_safe
 from django.contrib import admin
 
 from cart.models import Cart
@@ -13,8 +13,8 @@ class CartInline(admin.TabularInline):
     def display_images(self, obj):
         images_html = ""
         for product_image in obj.product.images.all():
-            images_html += format_html('<img src="{}" width="50" height="50" />', product_image.image.url)
-        return images_html
+            images_html += format_html('<img src="{}" height="80" />', product_image.image.url)
+        return mark_safe(images_html)
 
     display_images.short_description = 'Product Images'
 

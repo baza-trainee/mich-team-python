@@ -4,9 +4,6 @@ from main_app.models import Product
 from orders.models import Order
 
 
-# from orders.models import Order
-
-
 class Cart(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE,
                              verbose_name="Користувач")
@@ -22,9 +19,7 @@ class Cart(models.Model):
     def __str__(self):
         return f"{self.product} - Розмір: {self.size} - К-сть: {self.quantity}"
 
-
-
     class Meta:
-        indexes = [models.Index(fields=['session_id', 'user', 'is_active'])] #TODO: read about it (postgre specifice)
+        indexes = [models.Index(fields=['session_id', 'user', 'is_active'])]
         verbose_name = "замовлення"
         verbose_name_plural = "замовлення"

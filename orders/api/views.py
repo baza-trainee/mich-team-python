@@ -13,12 +13,33 @@ class OrderListCreateView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
 
     def get_session_id(self, request):
-        # Function to get session ID for unauthenticated users
         session_key = request.session.session_key
         if not session_key:
             request.session.save()
             session_key = request.session.session_key
         return session_key
+
+    def process_carts(self, carts, order):
+        for cart in carts:
+            product = cart.product
+            size_quantity_found = False  # Flag to check if a matching size is found
+
+            for size_quantity in product.sizes_and_quantities.all():
+                if size_quantity.size == cart.size and size_quantity.quantity >= cart.quantity:
+                    size_quantity.quantity -= cart.quantity
+                    size_quantity.save()
+                    cart.is_active = False
+                    cart.save()
+                    size_quantity_found = True
+                    break  # Exit the loop once a match is found
+
+            # Check if a matching size was not found
+            if not size_quantity_found:
+                order.delete()
+                return Response({'error': 'Ordered quantity exceeds available stock for product "{}"'.format(
+                    product.name)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return None
 
     def post(self, request, *args, **kwargs):
         phone = request.data.get("phone")
@@ -56,6 +77,7 @@ class OrderListCreateView(generics.CreateAPIView):
         order_serializer = OrderSerializer(data=response_data)
 
         if order_serializer.is_valid():
+
             order = order_serializer.save(user=user)
 
             # Handle associating carts with the order
@@ -63,22 +85,16 @@ class OrderListCreateView(generics.CreateAPIView):
                 user_carts = Cart.objects.filter(user=user, is_active=True)
                 user_carts.update(order=order)
 
-                for cart in user_carts:
-                    cart.is_active = False
-                    cart.save()
+                response = self.process_carts(user_carts, order)
+                if response:
+                    return response
             else:
                 session_carts = Cart.objects.filter(session_id=session_id, is_active=True)
                 session_carts.update(order=order)
 
-                for cart in session_carts:
-                    cart.is_active = False
-                    cart.save()
-
-            # for cart in order.carts.all():
-            #     product = cart.product
-            #     quantity = cart.quantity
-            #     product.quantity -= quantity
-            #     product.save()
+                response = self.process_carts(session_carts, order)
+                if response:
+                    return response
 
             return Response(order_serializer.data, status=status.HTTP_201_CREATED)
 

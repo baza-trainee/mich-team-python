@@ -113,6 +113,7 @@ class CartItemCreateView(ListCreateAPIView, DestroyAPIView, UpdateAPIView):
         quantity = request.data.get('quantity', 1)
         user = request.user if request.user.is_authenticated else None
         session_id = request.session.session_key
+        new_size = request.data.get('new_size')
 
 
         try:
@@ -132,6 +133,7 @@ class CartItemCreateView(ListCreateAPIView, DestroyAPIView, UpdateAPIView):
 
         # Update the quantity
         cart_item.quantity = int(quantity)
+        cart_item.size = new_size
         cart_item.save()
 
         serializer = CartSerializer(cart_item)

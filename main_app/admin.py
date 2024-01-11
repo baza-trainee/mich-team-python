@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.utils.safestring import mark_safe
+
 from .models import ProductCategory, Product, ProductImage, SizeQuantity
 from django.utils.html import format_html
 
@@ -11,7 +13,15 @@ admin.site.register(ProductCategory, ProductCategoryAdmin)
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
-    extra = 1
+    extra = 0
+    readonly_fields = ('display_images',)
+    def display_images(self, obj):
+        images_html = ""
+        for product_image in obj.product.images.all():
+            images_html += format_html('<img src="{}" height="80" />', product_image.image.url)
+        return mark_safe(images_html)
+
+    display_images.short_description = 'Фото'
 
 
 class SizeQuantityInline(admin.TabularInline):

@@ -16,6 +16,10 @@ class ProductImage(models.Model):
     product = models.ForeignKey('Product', related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='product_photos/', verbose_name="Фото")
 
+    class Meta:
+        verbose_name = "Фото"
+        verbose_name_plural = "Фото"
+
 
 class SizeQuantity(models.Model):
     product = models.ForeignKey('Product', related_name='sizes_and_quantities', on_delete=models.CASCADE)
@@ -31,6 +35,10 @@ class SizeQuantity(models.Model):
 
     def __str__(self):
         return f"{self.get_size_display()} - {self.quantity} available"
+
+    class Meta:
+        verbose_name = "Розмір"
+        verbose_name_plural = "Розміри"
 
 
 class Product(models.Model):

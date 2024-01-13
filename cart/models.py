@@ -16,6 +16,7 @@ class Cart(models.Model):
     is_active = models.BooleanField(default=True)
     order = models.ForeignKey(Order, null=True, blank=True, on_delete=models.CASCADE)
 
+
     def __str__(self):
         return f"{self.product} - Розмір: {self.size} - К-сть: {self.quantity}"
 

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from main_app.models import Product, ProductCategory, ProductImage, SizeQuantity
+from main_app.models import Product, ProductCategory, ProductImage, SizeQuantity, ProductOrder
 
 
 class ProductCategorySerializer(serializers.ModelSerializer):
@@ -7,15 +7,18 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         model = ProductCategory
         fields = '__all__'
 
+
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
         fields = '__all__'
 
+
 class SizeQuantitySerializer(serializers.ModelSerializer):
     class Meta:
         model = SizeQuantity
         fields = '__all__'
+
 
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
@@ -27,3 +30,9 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ['id', 'is_active', 'category_name', 'name', 'name_en', 'price', 'price_en', 'description',
                   'description_en',
                   'composition', 'composition_en', 'category_id', 'images', 'sizes_and_quantities']
+
+
+class ProductOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductOrder
+        fields = '__all__'

@@ -2,6 +2,9 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from orders.models import Order
+
+
 class ProductCategory(models.Model):
     name = models.CharField(max_length=255, verbose_name="Назва")
 
@@ -72,3 +75,22 @@ class Product(models.Model):
     class Meta:
         verbose_name = "Товар"
         verbose_name_plural = "Додання товару"
+
+class ProductOrder(models.Model):
+    category_id = models.ForeignKey(ProductCategory, on_delete=models.SET_NULL, null=True, verbose_name="Категорія")
+    category_name = models.CharField(max_length=255, verbose_name="Ім'я категорії", blank=True, null=True)
+    name = models.CharField(max_length=255, verbose_name="Назва", blank=True, null=True)
+    name_en = models.CharField(max_length=255, verbose_name="Назва (англійською)", null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Ціна", blank=True, null=True)
+    price_en = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Ціна (англійською)", null=True,
+                                   blank=True)
+    description = models.TextField(verbose_name="Опис", blank=True, null=True)
+    description_en = models.TextField(verbose_name="Опис (англійською)", null=True, blank=True)
+    composition = models.TextField(verbose_name="Склад", blank=True, null=True)
+    composition_en = models.TextField(verbose_name="Склад (англійською)", null=True, blank=True)
+    size = models.CharField(max_length=2, verbose_name="Розмір")
+    quantity = models.PositiveIntegerField(default=0, verbose_name="Кількість")
+    order = models.ForeignKey(Order, null=True, blank=True, on_delete=models.CASCADE, related_name='items')
+    def __str__(self):
+        return self.name
+

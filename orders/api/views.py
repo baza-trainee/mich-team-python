@@ -1,16 +1,22 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
+
 from cart.models import Cart
-from main_app.models import Product
+from main_app.models import ProductOrder
 from .serializers import OrderSerializer
+from ..models import Order
 
 CustomUser = get_user_model()
 
-
-class OrderListCreateView(generics.CreateAPIView):
+class OrderListCreateView(generics.ListCreateAPIView):
     serializer_class = OrderSerializer
     permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        user = self.request.user if self.request.user.is_authenticated else None
+
+        return Order.objects.filter(user=user)
 
     def get_session_id(self, request):
         session_key = request.session.session_key
@@ -21,10 +27,24 @@ class OrderListCreateView(generics.CreateAPIView):
 
     def process_carts(self, carts, order):
         for cart in carts:
-            product = cart.product
+            cart_product = cart.product
+            ProductOrder.objects.create(category_id=cart_product.category_id,
+                                        category_name=cart_product.category_id.name,
+                                        name=cart_product.name,
+                                        name_en=cart_product.name_en,
+                                        price=cart_product.price,
+                                        price_en=cart_product.price_en,
+                                        description=cart_product.description,
+                                        description_en=cart_product.description_en,
+                                        composition=cart_product.composition,
+                                        composition_en=cart_product.composition_en,
+                                        size=cart.size,
+                                        quantity=cart.quantity,
+                                        order=order)
+
             size_quantity_found = False  # Flag to check if a matching size is found
 
-            for size_quantity in product.sizes_and_quantities.all():
+            for size_quantity in cart_product.sizes_and_quantities.all():
                 if size_quantity.size == cart.size and size_quantity.quantity >= cart.quantity:
                     size_quantity.quantity -= cart.quantity
                     size_quantity.save()
@@ -37,7 +57,7 @@ class OrderListCreateView(generics.CreateAPIView):
             if not size_quantity_found:
                 order.delete()
                 return Response({'error': 'Ordered quantity exceeds available stock for product "{}"'.format(
-                    product.name)}, status=status.HTTP_400_BAD_REQUEST)
+                    cart_product.name)}, status=status.HTTP_400_BAD_REQUEST)
 
         return None
 
@@ -99,3 +119,11 @@ class OrderListCreateView(generics.CreateAPIView):
             return Response(order_serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(order_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        if request.user and request.user.is_authenticated:
+            return Response(self.get_serializer(queryset, many=True).data)
+
+        return Response({"error": "User is unauthenticated"}, status=status.HTTP_401_UNAUTHORIZED)

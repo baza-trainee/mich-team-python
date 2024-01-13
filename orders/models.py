@@ -3,7 +3,6 @@ from django.utils import timezone
 
 from django.db import models
 from django.contrib.auth.models import User
-from main_app.models import Product, SizeQuantity
 
 
 class Order(models.Model):

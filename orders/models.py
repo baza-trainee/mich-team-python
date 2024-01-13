@@ -4,13 +4,11 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 
-from main_app.models import Product
-
 
 class Order(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.SET_DEFAULT, null=True, default=None, verbose_name="Товар")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
                              verbose_name="Користувач")
+    email = models.EmailField(max_length=40, verbose_name="Пошта")
     first_name = models.CharField(max_length=50, verbose_name="Ім'я")
     last_name = models.CharField(max_length=50, verbose_name="Прізвище")
     phone = models.CharField(max_length=15, verbose_name="Телефон")
@@ -23,13 +21,14 @@ class Order(models.Model):
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата создания")
 
     STATUS_CHOICES = [
+        ('Новий', 'Новий'),
         ('Прийнято', 'Прийнято'),
         ('Скасовано', 'Скасовано'),
         ('Оплачено', 'Оплачено'),
         ('В дорозі', 'В дорозі'),
     ]
 
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Прийнято', verbose_name="Статус")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Новий', verbose_name="Статус")
 
     def __str__(self):
         return str(self.created_at)

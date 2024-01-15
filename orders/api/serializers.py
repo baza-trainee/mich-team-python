@@ -5,6 +5,13 @@ from orders.models import Order
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    """
+        Serializer class for the Order model.
+
+        This serializer is used to convert Order model instances to JSON format
+        and vice versa. It includes fields such as id, email, first_name, last_name, etc.
+        as well as a nested representation of associated ProductOrder instances under 'items'.
+    """
     items = ProductOrderSerializer(many=True, read_only=True)
 
     class Meta:

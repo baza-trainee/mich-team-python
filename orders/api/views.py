@@ -11,21 +11,14 @@ CustomUser = get_user_model()
 
 class OrderListCreateView(generics.ListCreateAPIView):
     """
-    API view for listing and creating orders.
-
-    Attributes:
-        serializer_class: The serializer class for orders.
-        permission_classes: A list of permission classes allowing any user to access this view.
+        API view for listing and creating orders.
     """
     serializer_class = OrderSerializer
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
         """
-        Get the queryset of orders based on the user's authentication status.
-
-        Returns:
-            QuerySet: A filtered queryset based on the user's authentication status.
+            Get the queryset of orders based on the user's authentication status.
         """
         user = self.request.user if self.request.user.is_authenticated else None
 
@@ -33,13 +26,7 @@ class OrderListCreateView(generics.ListCreateAPIView):
 
     def get_session_id(self, request):
         """
-        Get the session ID from the request.
-
-        Args:
-            request: The request object.
-
-        Returns:
-            str: The session ID.
+            Get the session ID from the request.
         """
         session_key = request.session.session_key
         if not session_key:
@@ -49,14 +36,7 @@ class OrderListCreateView(generics.ListCreateAPIView):
 
     def process_carts(self, carts, order):
         """
-        Process the carts associated with an order.
-
-        Args:
-            carts (QuerySet): The carts to be processed.
-            order (Order): The order to associate carts with.
-
-        Returns:
-            Response: A response indicating success or failure.
+            Process the carts associated with an order.
         """
         for cart in carts:
             cart_product = cart.product
@@ -95,15 +75,7 @@ class OrderListCreateView(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         """
-        Handle the creation of a new order.
-
-        Args:
-            request: The request object.
-            *args: Additional arguments.
-            **kwargs: Additional keyword arguments.
-
-        Returns:
-            Response: A response indicating success or failure.
+            Handle the creation of a new order.
         """
         phone = request.data.get("phone")
         delivery_method = request.data.get("delivery_method")
@@ -165,15 +137,7 @@ class OrderListCreateView(generics.ListCreateAPIView):
 
     def get(self, request, *args, **kwargs):
         """
-        Handle the retrieval of orders.
-
-        Args:
-            request: The request object.
-            *args: Additional arguments.
-            **kwargs: Additional keyword arguments.
-
-        Returns:
-            Response: A response containing the list of orders or an error message.
+            Handle the retrieval of orders.
         """
         queryset = self.get_queryset()
         if request.user and request.user.is_authenticated:

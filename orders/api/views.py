@@ -112,6 +112,7 @@ class OrderListCreateView(generics.ListCreateAPIView):
         order_serializer = OrderSerializer(data=response_data)
 
         if order_serializer.is_valid():
+            #TODO: do not create order if cart is empty
 
             order = order_serializer.save(user=user)
 

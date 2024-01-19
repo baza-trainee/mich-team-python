@@ -10,15 +10,24 @@ from ..models import Order
 CustomUser = get_user_model()
 
 class OrderListCreateView(generics.ListCreateAPIView):
+    """
+        API view for listing and creating orders.
+    """
     serializer_class = OrderSerializer
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
+        """
+            Get the queryset of orders based on the user's authentication status.
+        """
         user = self.request.user if self.request.user.is_authenticated else None
 
         return Order.objects.filter(user=user)
 
     def get_session_id(self, request):
+        """
+            Get the session ID from the request.
+        """
         session_key = request.session.session_key
         if not session_key:
             request.session.save()
@@ -26,6 +35,9 @@ class OrderListCreateView(generics.ListCreateAPIView):
         return session_key
 
     def process_carts(self, carts, order):
+        """
+            Process the carts associated with an order.
+        """
         for cart in carts:
             cart_product = cart.product
             ProductOrder.objects.create(category_id=cart_product.category_id,
@@ -62,6 +74,9 @@ class OrderListCreateView(generics.ListCreateAPIView):
         return None
 
     def post(self, request, *args, **kwargs):
+        """
+            Handle the creation of a new order.
+        """
         phone = request.data.get("phone")
         delivery_method = request.data.get("delivery_method")
         country = request.data.get("country")
@@ -97,6 +112,7 @@ class OrderListCreateView(generics.ListCreateAPIView):
         order_serializer = OrderSerializer(data=response_data)
 
         if order_serializer.is_valid():
+            #TODO: do not create order if cart is empty
 
             order = order_serializer.save(user=user)
 
@@ -121,8 +137,10 @@ class OrderListCreateView(generics.ListCreateAPIView):
         return Response(order_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, *args, **kwargs):
+        """
+            Handle the retrieval of orders.
+        """
         queryset = self.get_queryset()
-
         if request.user and request.user.is_authenticated:
             return Response(self.get_serializer(queryset, many=True).data)
 

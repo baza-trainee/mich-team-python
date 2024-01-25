@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from corsheaders.defaults import default_headers
 
 load_dotenv()
 
@@ -153,7 +154,11 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-CORS_ALLOW_HEADERS = ["ngrok-skip-browser-warning"]
+CORS_ALLOW_HEADERS = (*default_headers, "ngrok-skip-browser-warning")
+
+# CORS_ALLOW_ALL_HEADERS = True
+
+# CORS_ALLOWED_ORIGINS = ['https://netdogware.com']
 
 ROOT_URLCONF = 'mich_team_python.urls'
 
@@ -239,7 +244,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_TRUSTED_ORIGINS = ['https://a021-78-26-198-240.ngrok-free.app/']
+CSRF_TRUSTED_ORIGINS = ['https://9b5d-78-26-198-240.ngrok-free.app']
 
 MEDIA_URL = '/product_photos/'
 MEDIA_ROOT = os.path.join(BASE_DIR)

@@ -91,8 +91,10 @@ class OrderListCreateView(generics.ListCreateAPIView):
         user = request.user if request.user.is_authenticated else None
         user_id = user.id if user and user.is_authenticated else None
         email = user.email if user and user.is_authenticated else request.data.get("email")
-        first_name = user.first_name if user and user.is_authenticated else request.data.get("first_name")
-        last_name = user.last_name if user and user.is_authenticated else request.data.get("last_name")
+        first_name = user.first_name if user and user.is_authenticated and user.first_name else request.data.get(
+            "first_name")
+        last_name = user.last_name if user and user.is_authenticated and user.last_name else request.data.get(
+            "last_name")
 
         response_data = {
             "email": email,
@@ -119,13 +121,24 @@ class OrderListCreateView(generics.ListCreateAPIView):
             # Handle associating carts with the order
             if user and user.is_authenticated:
                 user_carts = Cart.objects.filter(user=user, is_active=True)
+
+                if not user_carts:
+                    order.delete()
+                    return Response({'error': 'Cannot create an order with an empty cart.'},
+                                    status=status.HTTP_400_BAD_REQUEST)
                 user_carts.update(order=order)
+
 
                 response = self.process_carts(user_carts, order)
                 if response:
                     return response
             else:
                 session_carts = Cart.objects.filter(session_id=session_id, is_active=True)
+
+                if not session_carts:
+                    order.delete()
+                    return Response({'error': 'Cannot create an order with an empty cart.'},
+                                    status=status.HTTP_400_BAD_REQUEST)
                 session_carts.update(order=order)
 
                 response = self.process_carts(session_carts, order)

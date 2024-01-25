@@ -22,8 +22,7 @@ class CartInline(admin.TabularInline):
              Display product images as thumbnails.
         """
         images_html = ""
-        for product_image in obj.product.images.all():
-            images_html += format_html('<img src="{}" height="80" />', product_image.image.url)
+        images_html += format_html('<img src="{}" height="80" />', obj.product.images.first().image.url)
         return mark_safe(images_html)
 
     display_images.short_description = 'Фото'

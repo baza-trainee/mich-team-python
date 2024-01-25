@@ -10,12 +10,12 @@ class Cart(models.Model):
     session_id = models.CharField(max_length=50, null=True, blank=True, db_index=True)
     product = models.ForeignKey(Product, null=True, on_delete=models.CASCADE, verbose_name="Товар")
     size = models.CharField(max_length=2,
-                            choices=[('XS', 'Extra Small'), ('S', 'Small'), ('M', 'Medium'), ('L', 'Large'),
+                            choices=[('NS', 'No Size'), ('XS', 'Extra Small'), ('S', 'Small'), ('M', 'Medium'),
+                                     ('L', 'Large'),
                                      ('XL', 'Extra Large')], null=True, blank=True, verbose_name="Розмір")
     quantity = models.PositiveIntegerField(default=1, verbose_name="Кількість")
     is_active = models.BooleanField(default=True)
     order = models.ForeignKey(Order, null=True, blank=True, on_delete=models.CASCADE)
-
 
     def __str__(self):
         return f"{self.product} - Розмір: {self.size} - К-сть: {self.quantity}"

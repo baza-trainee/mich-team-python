@@ -35,8 +35,14 @@ class SizeQuantity(models.Model):
         ('L', 'Large'),
         ('XL', 'Extra Large'),
     ]
-    size = models.CharField(max_length=2, choices=size_choices, default='NS', verbose_name="Розмір")
-    quantity = models.PositiveIntegerField(default=0, verbose_name="Кількість")
+    size = models.CharField(max_length=2, choices=size_choices, default='NS', verbose_name="Розмір",
+                            help_text="ОБОВЯЗКОВЕ ПОЛЕ!!! Якщо товар не має розміру, оберіть розмір 'No Size'.")
+    quantity = models.PositiveIntegerField(default=0, verbose_name="Кількість", help_text="ОБОВЯЗКОВЕ ПОЛЕ!!! Якщо "
+                                                                                          "товар не має кіл-сті, "
+                                                                                          "оберіть будь-яке значення "
+                                                                                          "більше 0. Товар "
+                                                                                          "автоматично виключаеться "
+                                                                                          "коли кіл-сть дорівнює 0")
 
     def __str__(self):
         return f"{self.get_size_display()} - {self.quantity} available"
@@ -44,6 +50,7 @@ class SizeQuantity(models.Model):
     class Meta:
         verbose_name = "Розмір"
         verbose_name_plural = "Розміри"
+
 
 @receiver(post_save, sender=SizeQuantity)
 def update_product_status(sender, instance, **kwargs):
@@ -62,12 +69,13 @@ class Product(models.Model):
     name_en = models.CharField(max_length=255, verbose_name="Назва (англійською)", null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Ціна", blank=False, null=False)
     price_en = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Ціна (англійською)", null=True,
-                                   blank=True)
+                                   blank=True, help_text="Ціна в $")
     description = models.TextField(verbose_name="Опис", blank=False, null=False)
     description_en = models.TextField(verbose_name="Опис (англійською)", null=True, blank=True)
     composition = models.TextField(verbose_name="Склад", blank=False, null=False)
     composition_en = models.TextField(verbose_name="Склад (англійською)", null=True, blank=True)
-    is_active = models.BooleanField(default=True, verbose_name="Опубліковано")
+    is_active = models.BooleanField(default=True, verbose_name="Опубліковано", help_text="Показ товару на головній "
+                                                                                         "сторінці")
 
     def __str__(self):
         return self.name
@@ -75,6 +83,7 @@ class Product(models.Model):
     class Meta:
         verbose_name = "Товар"
         verbose_name_plural = "Додання товару"
+
 
 class ProductOrder(models.Model):
     category_id = models.ForeignKey(ProductCategory, on_delete=models.SET_NULL, null=True, verbose_name="Категорія")
@@ -91,6 +100,6 @@ class ProductOrder(models.Model):
     size = models.CharField(max_length=2, verbose_name="Розмір")
     quantity = models.PositiveIntegerField(default=0, verbose_name="Кількість")
     order = models.ForeignKey(Order, null=True, blank=True, on_delete=models.CASCADE, related_name='items')
+
     def __str__(self):
         return self.name
-

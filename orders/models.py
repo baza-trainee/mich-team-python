@@ -26,6 +26,7 @@ class Order(models.Model):
         ('Скасовано', 'Скасовано'),
         ('Оплачено', 'Оплачено'),
         ('В дорозі', 'В дорозі'),
+        ('Виконано', 'Виконано'),
     ]
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Новий', verbose_name="Статус")

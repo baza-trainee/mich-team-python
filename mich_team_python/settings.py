@@ -254,3 +254,7 @@ SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_AGE = 8640000
 SESSION_COOKIE_NAME = 'sessionid'
+
+import dj_database_url
+
+DATABASES['default'] = dj_database_url.config(default=os.getenv('DATABASE_URL', 'postgres://michdb5_user:QYtX0QfgcO9csgl4PngMno6BkpVhM4OH@dpg-cmr74fol5elc73ai28n0-a.frankfurt-postgres.render.com/michdb5'))

@@ -249,7 +249,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_TRUSTED_ORIGINS = os.environ.get("ALLOWED_HOSTS").split(" ")
+CSRF_TRUSTED_ORIGINS = ('https://mich-team2.onrender.com',)
 
 MEDIA_URL = '/product_photos/'
 MEDIA_ROOT = os.path.join(BASE_DIR)

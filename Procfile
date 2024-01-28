@@ -1,1 +1,0 @@
-web gunicorn mich_team_python.wsgi:application --log-file -

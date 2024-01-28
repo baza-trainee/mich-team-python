@@ -7,7 +7,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         User = get_user_model()
-        if not User.objects.filter(email='postgres@gmail.com').exists():
+        if not User.objects.filter(email='postgres1@gmail.com').exists():
             User.objects.create_superuser(
                 email=os.environ.get("SUPERUSER_EMAIL"),
                 password=os.environ.get("SUPERUSER_PASSWORD")

@@ -252,7 +252,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = ('https://mich-team2.onrender.com',)
 
 MEDIA_URL = '/product_photos/'
-MEDIA_ROOT = os.path.join(BASE_DIR)
+MEDIA_ROOT = os.path.join(BASE_DIR, 'product_photos/')
 
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"

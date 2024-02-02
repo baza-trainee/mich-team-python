@@ -12,16 +12,12 @@ class CustomUserManager(BaseUserManager):
         if not email:
             raise ValueError('The Email field must be set')
 
-        existing_user = CustomUser.objects.filter(email__iexact=email).first()
-        if existing_user:
-            raise ValidationError(_('This email address is already in use.'))
-
-        user = self.model(email=email, is_subscribed=is_subscribed, **extra_fields)
+        user = self.model(email=email.lower(), is_subscribed=is_subscribed, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
 
         if is_subscribed:
-            EmailSubscribers.objects.create(email=email, is_subscribed=True)
+            EmailSubscribers.objects.create(email=email.lower(), is_subscribed=True)
 
         return user
 

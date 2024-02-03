@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, permissions
 from main_app.models import Product, ProductCategory, ProductImage, SizeQuantity
 from .serializers import ProductSerializer, ProductCategorySerializer, ProductImageSerializer, SizeQuantitySerializer
 
@@ -40,12 +40,11 @@ class ProductListCreateView(generics.ListAPIView):
         return Product.objects.filter(is_active=True)
 
 
-class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
+class ProductDetailView(generics.RetrieveAPIView):
     """
-        API view for retrieving, updating, and deleting a product.
+        API view for retrieving a product.
 
-        This view provides detailed information about a specific product
-        and supports updating or deleting that product.
+        This view provides detailed information about a specific product.
     """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer

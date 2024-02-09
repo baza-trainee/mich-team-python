@@ -47,11 +47,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework.authtoken',
     'corsheaders',
     'djoser',
     'drf_spectacular',
+    'social_django',
 
     'main_app',
     'orders',
@@ -80,10 +82,7 @@ DJOSER = {
     "ACTIVATION_URL": "user_auth/users/activation/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": False,
     "SOCIAL_AUTH_TOKEN_STRATEGY": "djoser.social.token.jwt.TokenStrategy",
-    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": [
-        "your redirect url",
-        "your redirect url",
-    ],
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": [os.environ.get("MY_URL")],
     "SERIALIZERS": {
         "user_create": "djoser.serializers.UserSerializer",
         "user": "user_auth.api.serializers.CustomUserSerializer",
@@ -92,7 +91,12 @@ DJOSER = {
     },
 }
 
-
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/userinfo.email',
+                                   'https://www.googleapis.com/auth/userinfo.profile',
+                                   'openid']
+SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=6),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
@@ -141,6 +145,7 @@ EMAIL_PORT = os.environ.get("EMAIL_PORT")
 
 
 MIDDLEWARE = [
+    'social_django.middleware.SocialAuthExceptionMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -175,6 +180,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect'
             ],
         },
     },
@@ -233,6 +240,11 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend'
+)
 
 
 # Static files (CSS, JavaScript, Images)

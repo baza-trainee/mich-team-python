@@ -97,6 +97,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['https://www.googleapis.com/auth/userinfo.ema
                                    'https://www.googleapis.com/auth/userinfo.profile',
                                    'openid']
 SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=6),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=90),

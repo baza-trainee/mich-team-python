@@ -34,6 +34,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True, verbose_name="Активний")
     is_staff = models.BooleanField(default=False, verbose_name="Адмін")
     is_subscribed = models.BooleanField(verbose_name="Підписан")
+    phone = models.CharField(max_length=15, verbose_name="Телефон", null=True, blank=True)
 
     objects = CustomUserManager()
 

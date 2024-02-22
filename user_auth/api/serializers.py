@@ -5,7 +5,7 @@ from ..models import CustomUser
 class CustomUserSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):
         model = CustomUser
-        fields = ('id', 'email', 'first_name', 'last_name', 'is_subscribed', 'password')
+        fields = ('id', 'email', 'first_name', 'last_name', 'is_subscribed', 'password', 'phone')
 
     password = serializers.CharField(write_only=True, required=False)
 

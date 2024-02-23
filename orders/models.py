@@ -13,11 +13,14 @@ class Order(models.Model):
     last_name = models.CharField(max_length=50, verbose_name="Прізвище")
     phone = models.CharField(max_length=15, verbose_name="Телефон")
     delivery_method = models.CharField(max_length=50, verbose_name="Метод доставки")
-    country = models.CharField(max_length=50, verbose_name="Країна")
-    street = models.CharField(max_length=100, verbose_name="Вулиця")
+    country = models.CharField(max_length=50, null=True, blank=True, verbose_name="Країна")
+    street = models.CharField(max_length=100, null=True, blank=True, verbose_name="Вулиця")
     city = models.CharField(max_length=50, verbose_name="Місто")
-    state = models.CharField(max_length=50, verbose_name="Область")
-    zip_code = models.CharField(max_length=10, verbose_name="Поштовий індекс")
+    state = models.CharField(max_length=50, null=True, blank=True, verbose_name="Область")
+    zip_code = models.CharField(max_length=10, null=True, blank=True, verbose_name="Поштовий індекс")
+    department = models.CharField(max_length=100, null=True, blank=True, verbose_name="Відділення")
+    house_number = models.CharField(max_length=10, null=True, blank=True, verbose_name="Номер будинку")
+    apartment_number = models.CharField(max_length=10, null=True, blank=True, verbose_name="Номер квартири")
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата создания")
 
     STATUS_CHOICES = [

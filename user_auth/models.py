@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -47,3 +48,23 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = "користувача"
         verbose_name_plural = "Користувачі"
+
+
+class UserAddresses(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name='addresses',
+                             null=True, blank=True, verbose_name="Користувач")
+    delivery_method = models.CharField(max_length=50, null=True, blank=True, verbose_name="Метод доставки")
+    country = models.CharField(max_length=50, null=True, blank=True, verbose_name="Країна")
+    street = models.CharField(max_length=100, null=True, blank=True, verbose_name="Вулиця")
+    city = models.CharField(max_length=50, verbose_name="Місто")
+    state = models.CharField(max_length=50, null=True, blank=True, verbose_name="Область")
+    zip_code = models.CharField(max_length=10, null=True, blank=True, verbose_name="Поштовий індекс")
+    department = models.CharField(max_length=100, null=True, blank=True, verbose_name="Відділення")
+    house_number = models.CharField(max_length=10, null=True, blank=True, verbose_name="Номер будинку")
+    apartment_number = models.CharField(max_length=10, null=True, blank=True, verbose_name="Номер квартири")
+
+    def __str__(self):
+        return f"{self.user} - {self.city}, {self.street}"
+    class Meta:
+        verbose_name = "адреса"
+        verbose_name_plural = "Адреси"

@@ -77,7 +77,7 @@ class OrderListCreateView(generics.ListCreateAPIView):
         """
             Handle the creation of a new order.
         """
-        phone = request.data.get("phone")
+
         delivery_method = request.data.get("delivery_method")
         country = request.data.get("country")
         street = request.data.get("street")
@@ -85,6 +85,9 @@ class OrderListCreateView(generics.ListCreateAPIView):
         state = request.data.get("state")
         zip_code = request.data.get("zip_code")
         product_data = request.data.get("product")
+        department = request.data.get("department")
+        house_number = request.data.get("house_number")
+        apartment_number = request.data.get("apartment_number")
 
         session_id = request.session.session_key
 
@@ -95,6 +98,8 @@ class OrderListCreateView(generics.ListCreateAPIView):
             "first_name")
         last_name = user.last_name if user and user.is_authenticated and user.last_name else request.data.get(
             "last_name")
+        phone = user.phone if user and user.is_authenticated and user.phone else request.data.get(
+            "phone")
 
         response_data = {
             "email": email,
@@ -107,6 +112,9 @@ class OrderListCreateView(generics.ListCreateAPIView):
             "city": city,
             "state": state,
             "zip_code": zip_code,
+            "department": department,
+            "house_number": house_number,
+            "apartment_number": apartment_number,
             'user': user_id,
             'product': product_data
         }
@@ -114,7 +122,6 @@ class OrderListCreateView(generics.ListCreateAPIView):
         order_serializer = OrderSerializer(data=response_data)
 
         if order_serializer.is_valid():
-            #TODO: do not create order if cart is empty
 
             order = order_serializer.save(user=user)
 

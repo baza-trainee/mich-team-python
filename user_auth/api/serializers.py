@@ -1,11 +1,12 @@
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
-from ..models import CustomUser
+from ..models import CustomUser, UserAddresses
+
 
 class CustomUserSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):
         model = CustomUser
-        fields = ('id', 'email', 'first_name', 'last_name', 'is_subscribed', 'password')
+        fields = ('id', 'email', 'first_name', 'last_name', 'is_subscribed', 'password', 'phone')
 
     password = serializers.CharField(write_only=True, required=False)
 
@@ -25,3 +26,12 @@ class CustomUserSerializer(UserCreateSerializer):
             instance.set_password(password)
 
         return super().update(instance, validated_data)
+
+class UserAddressSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserAddresses
+        fields = ['id', 'delivery_method', 'country', 'street', 'city', 'state', 'zip_code', 'department',
+                  'house_number',
+                  'apartment_number']
+

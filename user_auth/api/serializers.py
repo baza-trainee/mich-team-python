@@ -35,3 +35,5 @@ class UserAddressSerializer(serializers.ModelSerializer):
                   'house_number',
                   'apartment_number']
 
+
+

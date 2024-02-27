@@ -45,6 +45,18 @@ class UserAddressView(ListCreateAPIView, DestroyAPIView, UpdateAPIView):
         if not user:
             return Response({'error': "User is not authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
 
+        if not city:
+            return Response({'error': "Field 'city' is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        max_lengths = {field.name: field.max_length for field in UserAddresses._meta.fields}
+
+        for field, value in {'delivery_method': delivery_method, 'country': country, 'street': street,
+                             'city': city, 'state': state, 'zip_code': zip_code, 'department': department,
+                             'house_number': house_number, 'apartment_number': apartment_number}.items():
+            if len(value) > max_lengths[field]:
+                return Response({'error': f"Field '{field}' exceeds maximum length of {max_lengths[field]}"},
+                                status=status.HTTP_400_BAD_REQUEST)
+
         # Check if an address already exists
         address_data = UserAddresses.objects.filter(
             user=user,
@@ -75,6 +87,7 @@ class UserAddressView(ListCreateAPIView, DestroyAPIView, UpdateAPIView):
                 house_number=house_number,
                 apartment_number=apartment_number
             )
+
             new_address_data.save()
 
             # Return the newly created address
@@ -98,6 +111,15 @@ class UserAddressView(ListCreateAPIView, DestroyAPIView, UpdateAPIView):
 
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
+
+        # Fetch all existing addresses for the user
+        existing_addresses = UserAddresses.objects.filter(user=user)
+
+        # Compare each existing address with the incoming data
+        for existing_address in existing_addresses:
+            if self.data_matches_existing(existing_address, request.data):
+                return Response({'error': "Already exists"}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
@@ -108,6 +130,16 @@ class UserAddressView(ListCreateAPIView, DestroyAPIView, UpdateAPIView):
             instance._prefetched_objects_cache = {}
 
         return Response(serializer.data)
+
+    def data_matches_existing(self, existing_address, new_data):
+        """
+        Checks if the new data matches the existing data.
+        """
+        # Exclude the 'id' field from the comparison
+        fields_to_compare = {field: getattr(existing_address, field) for field in new_data.keys() if field != 'id'}
+
+        # Check if the existing address has the same data
+        return all(value == new_data[field] for field, value in fields_to_compare.items())
 
     def destroy(self, request, *args, **kwargs):
         user = request.user if request.user.is_authenticated else None

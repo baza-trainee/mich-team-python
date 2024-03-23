@@ -98,6 +98,7 @@ class CartItemCreateView(ListCreateAPIView, DestroyAPIView, UpdateAPIView):
 
     def get(self, request, *args, **kwargs):
         request.session.setdefault('init', True)
+        request.session.save()
         user = request.user if request.user.is_authenticated else None
         session_id = request.session.session_key
 

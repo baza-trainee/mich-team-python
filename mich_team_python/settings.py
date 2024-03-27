@@ -162,7 +162,7 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-CORS_ALLOW_HEADERS = (*default_headers, "ngrok-skip-browser-warning", 'Set-Cookie')
+CORS_ALLOW_HEADERS = (*default_headers, "ngrok-skip-browser-warning")
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -274,3 +274,9 @@ SESSION_COOKIE_NAME = 'sessionid'
 
 database_url = os.environ.get("DATABASE_URL")
 DATABASES['default'] = dj_database_url.parse(database_url)
+
+
+SESSION_COOKIE_SAMESITE = None
+CSRF_COOKIE_SAMESITE = None
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True

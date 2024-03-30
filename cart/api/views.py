@@ -165,8 +165,12 @@ class CartItemCreateView(ListCreateAPIView, DestroyAPIView, UpdateAPIView):
         if new_size and not SizeQuantity.objects.filter(product=product, size=new_size, quantity__gt=0).exists():
             return Response({'error': "Invalid new_size for the product"}, status=status.HTTP_400_BAD_REQUEST)
 
+        if new_size:
+            cart_item.size = new_size
+        else:
+            cart_item.size = size
+
         cart_item.quantity = int(quantity)
-        cart_item.size = new_size
         cart_item.save()
 
         serializer = CartSerializer(cart_item)

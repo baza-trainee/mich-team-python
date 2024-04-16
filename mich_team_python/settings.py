@@ -83,7 +83,7 @@ DJOSER = {
     "SEND_ACTIVATION_EMAIL": True,
     "SOCIAL_AUTH_TOKEN_STRATEGY": "djoser.social.token.jwt.TokenStrategy",
     "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": [os.environ.get("MY_URL"), os.environ.get("MY_URL2"), os.environ.get(
-        "MY_URL3")],
+        "MY_URL3"), os.environ.get("MY_URL4")],
     "SERIALIZERS": {
         "user_create": "djoser.serializers.UserSerializer",
         "user": "user_auth.api.serializers.CustomUserSerializer",
